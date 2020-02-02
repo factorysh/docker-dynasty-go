@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/docker/docker/client"
 	"gitlhub.com/factorysh/docker-dynasty-go/dynasty"
@@ -17,8 +18,26 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-
-	for _, l := range d.Tree() {
-		fmt.Println(string(l.Code), l.Tags)
+	if len(os.Args) == 1 {
+		for _, l := range d.Tree() {
+			fmt.Println(string(l.Code), l.Tags)
+		}
+	} else {
+		ancestors, err := d.Ancestor(os.Args[1])
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println("Ancestors")
+		for _, l := range ancestors {
+			fmt.Println("\t", string(l.Code), l.Tags)
+		}
+		descendants, err := d.Descendant(os.Args[1])
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println("Descendants")
+		for _, l := range descendants {
+			fmt.Println("\t", string(l.Code), l.Tags)
+		}
 	}
 }

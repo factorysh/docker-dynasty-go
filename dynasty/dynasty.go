@@ -81,3 +81,56 @@ func (d *Dynasty) Tree() []LayerCodeTags {
 	sort.Sort(r)
 	return r
 }
+
+func (d *Dynasty) Ancestor(name string) ([]LayerCodeTags, error) {
+	return d.beforeAfter(name, func(a, b []byte) bool {
+		return startswith(a, b)
+	})
+}
+
+func (d *Dynasty) Descendant(name string) ([]LayerCodeTags, error) {
+	return d.beforeAfter(name, func(a, b []byte) bool {
+		return startswith(b, a)
+	})
+}
+
+func (d *Dynasty) beforeAfter(name string, cmp func(a, b []byte) bool) ([]LayerCodeTags, error) {
+	ctx := context.Background()
+	inspect, _, err := d.client.ImageInspectWithRaw(ctx, name)
+	if err != nil {
+		return nil, err
+	}
+	id := d.layers[inspect.ID]
+	r := make(ByLayerCodeTags, 0)
+	for k, layer := range d.layers {
+		is, ok := d.all[k]
+		var tags []string
+		if ok {
+			tags = is.RepoTags
+		} else {
+			tags = []string{}
+		}
+		if cmp(layer, id) {
+			r = append(r, LayerCodeTags{
+				Code:  layer,
+				Layer: k,
+				Tags:  tags,
+			})
+		}
+	}
+	sort.Sort(r)
+	return r, nil
+}
+
+func startswith(needle, haystack []byte) bool {
+	if len(needle) > len(haystack) {
+		return false
+	}
+
+	for i, b := range needle {
+		if haystack[i] != b {
+			return false
+		}
+	}
+	return true
+}
