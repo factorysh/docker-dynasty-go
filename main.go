@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/docker/docker/client"
 	"gitlhub.com/factorysh/docker-dynasty-go/dynasty"
 )
@@ -13,9 +11,8 @@ func main() {
 		panic(err)
 	}
 
-	d, err := dynasty.New(cli)
+	_, err = dynasty.New(cli)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(d)
 }
