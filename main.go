@@ -29,7 +29,7 @@ func main() {
 		}
 		fmt.Println("Ancestors")
 		for _, l := range ancestors {
-			fmt.Println("\t", string(l.Code), l.Tags)
+			fmt.Println("\t", string(l.Code), l.Tags, l.Labels)
 		}
 		descendants, err := d.Descendant(os.Args[1])
 		if err != nil {
@@ -37,7 +37,7 @@ func main() {
 		}
 		fmt.Println("Descendants")
 		for _, l := range descendants {
-			fmt.Println("\t", string(l.Code), l.Tags)
+			fmt.Println("\t", string(l.Code), l.Tags, l.Labels)
 		}
 	}
 }

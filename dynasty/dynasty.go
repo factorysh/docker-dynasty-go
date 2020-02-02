@@ -59,9 +59,10 @@ func (d *Dynasty) encodeLayers(layers []string) []byte {
 
 // LayerCodeTags Layer, code and tags
 type LayerCodeTags struct {
-	Layer string
-	Code  []byte
-	Tags  []string
+	Layer  string
+	Code   []byte
+	Tags   []string
+	Labels map[string]string
 }
 
 // ByLayerCodeTags sorts LayerCodeTags
@@ -78,9 +79,10 @@ func (d *Dynasty) Tree() []LayerCodeTags {
 	i := 0
 	for id, code := range d.layers {
 		r[i] = LayerCodeTags{
-			Code:  code,
-			Layer: id,
-			Tags:  d.all[id].RepoTags,
+			Code:   code,
+			Layer:  id,
+			Tags:   d.all[id].RepoTags,
+			Labels: d.all[id].Labels,
 		}
 		i++
 	}
@@ -113,16 +115,20 @@ func (d *Dynasty) beforeAfter(name string, cmp func(a, b []byte) bool) ([]LayerC
 	for k, layer := range d.layers {
 		is, ok := d.all[k]
 		var tags []string
+		var labels map[string]string
 		if ok {
 			tags = is.RepoTags
+			labels = is.Labels
 		} else {
 			tags = []string{}
+			labels = map[string]string{}
 		}
 		if cmp(layer, id) {
 			r = append(r, LayerCodeTags{
-				Code:  layer,
-				Layer: k,
-				Tags:  tags,
+				Code:   layer,
+				Layer:  k,
+				Tags:   tags,
+				Labels: labels,
 			})
 		}
 	}
