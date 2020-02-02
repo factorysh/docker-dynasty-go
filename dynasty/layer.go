@@ -1,9 +1,11 @@
 package dynasty
 
+// Layers keep layers ranks, and is encoded path
 type Layers struct {
 	data map[string][]byte
 }
 
+// NewLayers returns a new Layers
 func NewLayers() *Layers {
 	return &Layers{
 		data: make(map[string][]byte),
@@ -19,6 +21,7 @@ func (l *Layers) layer(layer string) []byte {
 	return l.data[layer]
 }
 
+// encode a number : n is converted to base 26, with fixed number of digits
 func encode(n, size int) []byte {
 	buf := make([]byte, size)
 	nums := num(n, []int{})
