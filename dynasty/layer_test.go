@@ -17,3 +17,10 @@ func TestEncode(t *testing.T) {
 	assert.Equal(t, []byte("ab_"), encode(26, 3))
 	assert.Equal(t, []byte("bc_"), encode(53, 3))
 }
+
+func TestLayers(t *testing.T) {
+	l := NewLayers()
+	assert.Equal(t, []byte("a__"), l.layer("beuha"))
+	assert.Equal(t, []byte("b__"), l.layer("aussi"))
+	assert.Equal(t, []byte("a__"), l.layer("beuha"))
+}
